@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "object-detection")
+@ConfigurationProperties(prefix = "general")
 public class GeneralProperties {
     private String locale = "pt-BR";
 }

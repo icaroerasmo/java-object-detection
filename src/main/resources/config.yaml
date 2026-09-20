@@ -1,5 +1,6 @@
-object-detection:
+general:
   locale: 'pt-BR'
+object-detection:
   streams:
     processing-fps: 5
     frame-queue-capacity: 2
