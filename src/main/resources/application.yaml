@@ -26,6 +26,15 @@ spring:
     # We keep user-editable configs (object-detection.*) in config.yaml there
     import: optional:config/ # will look for config/config.yaml by default
 
+app:
+  config-file-path: /app/config/config.yaml
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+
 logging:
   level:
     root: INFO
