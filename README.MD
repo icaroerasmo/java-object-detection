@@ -4,6 +4,8 @@ This document describes the application properties supported by **RTSP Object De
 
 For architecture, operations, troubleshooting, and the release/deployment process, see [KNOWLEDGE_BASE.md](KNOWLEDGE_BASE.md).
 
+For GPU acceleration setup (CUDA / OpenCL), see [GPU_ACCELERATION.md](GPU_ACCELERATION.md).
+
 All examples below use **placeholder values only**. Do not commit real RTSP URLs or other environment-specific values to the repository.
 
 ## Configuration root
