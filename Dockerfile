@@ -13,7 +13,7 @@ RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
       mvn clean package -DskipTests -Djavacpp.platform=linux-x86_64; \
     fi
 
-FROM eclipse-temurin:21-jre-jammy
+FROM eclipse-temurin:21-jre-noble
 ENV DEBIAN_FRONTEND=noninteractive
 WORKDIR /app
 ARG TARGETPLATFORM
@@ -26,14 +26,14 @@ RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
       apt-get update && apt-get install -y --no-install-recommends \
         ffmpeg rclone tzdata libgtk-3-0 libgtk2.0-0 libsm6 libxrender1 libxext6 libx11-6 \
         libfontconfig1 libice6 libgomp1 libgfortran5 libstdc++6 libopenblas0 libopenblas-dev \
-        liblapack3 liblapack-dev libblas3 libjpeg-turbo-progs libpng-dev libtiff5 libpython3.10 \
+        liblapack3 liblapack-dev libblas3 libjpeg-turbo-progs libpng-dev libtiff6 libpython3.12 \
         ocl-icd-libopencl1 mesa-opencl-icd \
         && rm -rf /var/lib/apt/lists/*; \
     else \
       apt-get update && apt-get install -y --no-install-recommends \
         ffmpeg rclone tzdata libgtk-3-0 libgtk2.0-0 libsm6 libxrender1 libxext6 libx11-6 \
         libfontconfig1 libice6 libgomp1 libquadmath0 libgfortran5 libstdc++6 libopenblas0 libopenblas-dev \
-        liblapack3 liblapack-dev libblas3 libjpeg-turbo-progs libpng-dev libtiff5 libpython3.10 \
+        liblapack3 liblapack-dev libblas3 libjpeg-turbo-progs libpng-dev libtiff6 libpython3.12 \
         ocl-icd-libopencl1 mesa-opencl-icd \
         && rm -rf /var/lib/apt/lists/*; \
     fi
