@@ -7,6 +7,7 @@ import org.springframework.boot.context.properties.source.ConfigurationPropertyS
 import org.springframework.core.env.MapPropertySource;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -137,6 +138,23 @@ class DetectionPropertiesBindingTest {
         assertEquals(AccelerationProperties.Target.OPENCL_FP16, acceleration.getPersonDetectionTarget());
         assertFalse(acceleration.isEnableOpencl());
         assertFalse(acceleration.isFallbackToCpu());
+    }
+
+    @Test
+    void cameraEnabledFlagBindsAndDefaultsToTrue() {
+        Map<String, Object> props = new HashMap<>();
+        props.put("object-detection.streams.cameras[0].name", "camera1");
+        props.put("object-detection.streams.cameras[0].url", "rtsp://example.local/stream1");
+        props.put("object-detection.streams.cameras[0].enabled", "false");
+        props.put("object-detection.streams.cameras[1].name", "camera2");
+        props.put("object-detection.streams.cameras[1].url", "rtsp://example.local/stream2");
+
+        List<CameraProperties> cameras = bind(props).getStreams().getCameras();
+        assertEquals(2, cameras.size());
+        assertEquals("camera1", cameras.get(0).getName());
+        assertFalse(cameras.get(0).isEnabled());
+        assertEquals("camera2", cameras.get(1).getName());
+        assertTrue(cameras.get(1).isEnabled(), "enabled must default to true when not configured");
     }
 
     @Test

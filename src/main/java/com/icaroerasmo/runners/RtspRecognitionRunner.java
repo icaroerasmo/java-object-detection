@@ -66,12 +66,22 @@ public class RtspRecognitionRunner {
                 throw new IllegalStateException("No cameras configured under object-detection.streams.cameras");
             }
 
-            // Create thread pool with one thread per camera
-            ExecutorService executorService = Executors.newFixedThreadPool(cameraProperties.size());
+            // Cameras with enabled=false are skipped entirely: no frame grab, no
+            // detection worker, no reconnect/retry, so a broken stream costs nothing.
+            List<CameraProperties> activeCameras = enabledCameras(cameraProperties);
+            if (activeCameras.isEmpty()) {
+                log.warn("All {} configured camera(s) are disabled (enabled: false) - nothing to process",
+                        cameraProperties.size());
+                return;
+            }
+            log.info("Starting {} of {} configured camera(s)", activeCameras.size(), cameraProperties.size());
+
+            // Create thread pool with one thread per enabled camera
+            ExecutorService executorService = Executors.newFixedThreadPool(Math.max(1, activeCameras.size()));
             List<Future<?>> futures = new ArrayList<>();
 
             for (CameraProperties camera : cameraProperties) {
-                if (camera == null || camera.getUrl() == null || camera.getUrl().isBlank()) {
+                if (camera == null || camera.getUrl() == null || camera.getUrl().isBlank() || !camera.isEnabled()) {
                     continue;
                 }
 
@@ -104,6 +114,24 @@ public class RtspRecognitionRunner {
             log.error("Error in RtspRecognitionRunner", e);
             throw e;
         }
+    }
+
+    /**
+     * Returns only the cameras that should actually be processed, i.e. the ones
+     * with {@code enabled} not set to {@code false}. Null entries are dropped so
+     * the result can be used for counting threads safely.
+     */
+    static List<CameraProperties> enabledCameras(List<CameraProperties> all) {
+        if (all == null || all.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<CameraProperties> enabled = new ArrayList<>(all.size());
+        for (CameraProperties camera : all) {
+            if (camera != null && camera.isEnabled()) {
+                enabled.add(camera);
+            }
+        }
+        return enabled;
     }
 
     @NotNull

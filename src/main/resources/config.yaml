@@ -8,8 +8,10 @@ object-detection:
     max-consecutive-null-frames: 300
     cameras:
       - name: "backyard"
+        enabled: true # default value is true. Set to false to skip this camera entirely (no frame grab, no detection)
         url: "rtsp://localhost:8554/backyard?video&audio"
       # - name: "front-door"
+      #   enabled: true
       #   url: "rtsp://another-camera/stream"
   training:
     root-folder: "train"
