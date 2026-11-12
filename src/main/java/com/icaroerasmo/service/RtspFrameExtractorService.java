@@ -525,7 +525,7 @@ public class RtspFrameExtractorService {
      */
     private int computeFrameQueueCapacity() {
         int framesPerCamera = Math.max(1, streamsProperties.getFrameQueueCapacity());
-        int cameraCount = Math.max(1, streamsProperties.getCameras().size());
+        int cameraCount = Math.max(1, countEnabledCameras());
 
         int queueCapacity = framesPerCamera * cameraCount;
 
@@ -537,6 +537,21 @@ public class RtspFrameExtractorService {
             perQueueBytes / (1024 * 1024), totalBufferBytes / (1024 * 1024));
 
         return queueCapacity;
+    }
+
+    /**
+     * Counts only the cameras that are actually processed: a camera disabled via
+     * {@code enabled: false} allocates no frame buffer, so it must not inflate the
+     * queue sizing above.
+     */
+    private int countEnabledCameras() {
+        int count = 0;
+        for (CameraProperties camera : streamsProperties.getCameras()) {
+            if (camera != null && camera.isEnabled()) {
+                count++;
+            }
+        }
+        return count;
     }
 
     private int resolveMatType(int channels) {
